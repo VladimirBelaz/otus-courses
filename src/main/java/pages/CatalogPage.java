@@ -43,22 +43,23 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
                 "h6",
                 ".sc-1yg5ro0-1",
                 "[class*='sc-1yg5ro0']",
-                "h6 div"
+                "h6 div",
+                ".sc-1yg5ro0-0 div"
         };
 
         for (String selector : selectors) {
             try {
                 List<WebElement> elements = card.findElements(By.cssSelector(selector));
                 for (WebElement el : elements) {
-                    TextBlock textBlock = new TextBlock(el);
-                    String text = textBlock.getText();
-                    if (text != null && !text.isEmpty() && text.length() < 100 && !text.contains("Курс") && !text.contains("Специализация")) {
+                    String text = el.getText();
+                    if (text != null && !text.isEmpty() && text.length() < 100
+                            && !text.contains("Курс") && !text.contains("Специализация")) {
                         return text;
                     }
                 }
             } catch (Exception ignored) {}
         }
-        return "";
+        return null;
     }
 
     public Optional<WebElement> findCourseByName(String courseName) {
@@ -71,7 +72,8 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
         Optional<WebElement> exactMatch = cards.stream()
                 .filter(card -> {
                     String title = getCourseTitleFromCard(card);
-                    System.out.println("Название курса: " + title);
+                    // Добавляем проверку на null!
+                    if (title == null) return false;
                     return title.equalsIgnoreCase(courseName);
                 })
                 .findFirst();
@@ -84,6 +86,8 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
         Optional<WebElement> partialMatch = cards.stream()
                 .filter(card -> {
                     String title = getCourseTitleFromCard(card);
+                    // Добавляем проверку на null!
+                    if (title == null) return false;
                     return title.toLowerCase().contains(courseName.toLowerCase());
                 })
                 .findFirst();

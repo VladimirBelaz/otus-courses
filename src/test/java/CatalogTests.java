@@ -23,8 +23,9 @@ public class CatalogTests {
 
     //Сценарий 1
     @Test
-    public void testFindAndOpenCourseByNameSystemDesign() {
-        String courseName = "System Design";
+    public void testFindAndOpenCourseByName() throws InterruptedException {
+
+        String courseName = "Symfony Framework";
 
         catalogPage.open();
 

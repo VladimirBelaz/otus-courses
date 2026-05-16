@@ -36,6 +36,7 @@ public abstract class AbsBasePage<T> extends AbsCommon {
     }
 
     public String getCurrentUrl() {
+
         return driver.getCurrentUrl();
     }
 }
