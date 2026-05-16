@@ -38,7 +38,7 @@ public class CookiePopupComponent extends AbsCommon {
     }
 
     public void waitAndClose() {
-        WebElement popup = waiters.waitForOptionalElement(POPUP_LOCATOR, 1);  // ← 1 секунда вместо 5
+        WebElement popup = waiters.waitForOptionalElement(POPUP_LOCATOR, 1);
 
         if (popup != null && popup.isDisplayed()) {
             System.out.println("Cookie popup обнаружен, закрываем...");
