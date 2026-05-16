@@ -10,9 +10,13 @@ public class Button extends BaseElement {
     }
 
     public void click() {
-        highlight();
+        highlight();  
         wait.until(ExpectedConditions.elementToBeClickable(element));
         element.click();
+    }
+
+    public boolean isEnabled() {
+        return element.isEnabled();
     }
 
     public String getText() {

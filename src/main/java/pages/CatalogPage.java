@@ -3,7 +3,8 @@ package pages;
 import annotations.Path;
 import components.CookiePopupComponent;
 import elements.Link;
-import elements.TextBlock;
+import exceptions.CourseNotFoundException;
+import exceptions.ElementInteractionException;
 import jakarta.inject.Inject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -26,6 +27,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
     @Override
     public CatalogPage open() {
         String url = baseUrl + getPath();
+        url = url.replaceAll("([^:])(/{2,})", "$1/");
         driver.get(url);
         cookiePopup.waitAndClose();
         waiters.waitForPresence(By.cssSelector("a[href*='/lessons/']"));
@@ -57,7 +59,9 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
                         return text;
                     }
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                System.out.println("Ошибка при поиске по селектору '" + selector + "': " + e.getMessage());
+            }
         }
         return null;
     }
@@ -72,9 +76,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
         Optional<WebElement> exactMatch = cards.stream()
                 .filter(card -> {
                     String title = getCourseTitleFromCard(card);
-                    // Добавляем проверку на null!
-                    if (title == null) return false;
-                    return title.equalsIgnoreCase(courseName);
+                    return title != null && title.equalsIgnoreCase(courseName);
                 })
                 .findFirst();
 
@@ -86,9 +88,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
         Optional<WebElement> partialMatch = cards.stream()
                 .filter(card -> {
                     String title = getCourseTitleFromCard(card);
-                    // Добавляем проверку на null!
-                    if (title == null) return false;
-                    return title.toLowerCase().contains(courseName.toLowerCase());
+                    return title != null && title.toLowerCase().contains(courseName.toLowerCase());
                 })
                 .findFirst();
 
@@ -107,23 +107,46 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
 
         if (courseOpt.isPresent()) {
             WebElement courseElement = courseOpt.get();
-            Link courseLink = new Link(courseElement);
-            String title = courseLink.getText();
+            try {
+                Link courseLink = new Link(courseElement);
+                String title = courseLink.getText();
 
-            System.out.println("Кликаем по курсу: " + title);
+                System.out.println("Кликаем по курсу: " + title);
 
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", courseElement);
+                ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", courseElement);
 
-            courseLink.click();
+                courseLink.click();
 
-            return new CoursePage(driver);
+                return new CoursePage(driver);
+            } catch (Exception e) {
+                throw new ElementInteractionException("Клик по курсу: " + courseName, e);
+            }
         }
 
-        throw new RuntimeException("Курс с названием '" + courseName + "' не найден в каталоге");
+        throw new CourseNotFoundException(courseName);
     }
 
     public List<WebElement> getAllCourseCards() {
         waiters.waitForPresence(By.cssSelector("a[href*='/lessons/']"));
         return getCourseCards();
+    }
+
+    public boolean isCategorySelected(String categoryName) {
+        try {
+            List<WebElement> labels = driver.findElements(By.cssSelector(".sc-1fry39v-1"));
+
+            for (WebElement label : labels) {
+                if (label.getText().equalsIgnoreCase(categoryName)) {
+                    String forId = label.getAttribute("for");
+                    if (forId != null) {
+                        WebElement checkbox = driver.findElement(By.id(forId));
+                        return checkbox.isSelected();
+                    }
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            throw new ElementInteractionException("Проверка категории: " + categoryName, e);
+        }
     }
 }

@@ -1,6 +1,8 @@
 package pages;
 
 import elements.TextBlock;
+import exceptions.ElementInteractionException;
+import exceptions.PageLoadingException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.By;
@@ -16,9 +18,23 @@ public class CoursePage extends AbsBasePage<CoursePage> {
     }
 
     public String getCourseTitle() {
-        WebElement titleElement = waiters.waitForVisibility(By.cssSelector("h1"));
-        TextBlock titleBlock = new TextBlock(titleElement);
-        return titleBlock.getText();
+        try {
+            WebElement titleElement = waiters.waitForVisibility(By.cssSelector("h1"));
+            TextBlock titleBlock = new TextBlock(titleElement);
+            return titleBlock.getText();
+        } catch (Exception e) {
+            throw new ElementInteractionException("Получение заголовка курса", e);
+        }
+    }
+
+    public String getStartDate() {
+        try {
+            WebElement dateElement = waiters.waitForVisibility(By.cssSelector(".sc-157icee-1"));
+            TextBlock dateBlock = new TextBlock(dateElement);
+            return dateBlock.getText();
+        } catch (Exception e) {
+            return "Дата не указана";
+        }
     }
 
     public CourseData getCourseDataViaJsoup() {
@@ -34,7 +50,7 @@ public class CoursePage extends AbsBasePage<CoursePage> {
 
             return new CourseData(title, startDate);
         } catch (IOException e) {
-            throw new RuntimeException("Не удалось загрузить страницу через Jsoup: " + url, e);
+            throw new PageLoadingException(url, e);
         }
     }
 

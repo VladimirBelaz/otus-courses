@@ -1,4 +1,3 @@
-import assertions.CourseAssertions;
 import extensions.UIExtension;
 import helpers.CourseAnalyzer;
 import jakarta.inject.Inject;
@@ -18,13 +17,11 @@ public class CatalogTests {
 
     @Inject
     private CatalogPage catalogPage;
-
     private CourseAnalyzer analyzer;
 
-    //Сценарий 1
+    //СЦЕНАРИЙ 1
     @Test
-    public void testFindAndOpenCourseByName() throws InterruptedException {
-
+    public void testFindAndOpenCourseByName() {
         String courseName = "Symfony Framework";
 
         catalogPage.open();
@@ -39,31 +36,42 @@ public class CatalogTests {
         assertCourseTitleMatches(actualTitle, coursePage.getCourseTitle());
     }
 
-    //Сценарий 2
+    //СЦЕНАРИЙ 2
     @Test
     public void testFindEarliestAndLatestCourseDates() {
         catalogPage.open();
         analyzer = new CourseAnalyzer(catalogPage);
 
         var courses = analyzer.getAllCourseInfos();
+        assertCoursesNotEmpty(courses);
+
         var earliest = analyzer.findEarliestCourse(courses);
         var latest = analyzer.findLatestCourse(courses);
 
-        CourseAssertions.assertDatesValid(analyzer.hasValidDates(courses));
-        analyzer.validateEarliestWithJsoup(earliest);
-
         analyzer.printResults(earliest, latest);
+
+        CoursePage earliestPage = catalogPage.clickCourseByName(earliest.title());
+        CoursePage.CourseData jsoupData = earliestPage.getCourseDataViaJsoup();
+
+        assertEarliestCourseWithJsoup(earliest, jsoupData);
     }
 
-    //Сценарий 3
+    //СЦЕНАРИЙ 3
     @Test
     public void testOpenRandomCategoryFromTrainingMenu() {
         MainPage page = mainPage.open();
-
         CatalogPage catalogPageFromMenu = page.getHeader().openRandomCategoryFromTrainingMenu();
+        String selectedCategory = page.getHeader().getSelectedCategoryName();
         String currentUrl = catalogPageFromMenu.getCurrentUrl();
 
+        System.out.println("Выбранная категория: " + selectedCategory);
+        System.out.println("URL после выбора: " + currentUrl);
+
         assertCatalogPageOpened(currentUrl);
+        assertUrlContainsCategory(currentUrl, selectedCategory);
+        assertCategorySelectedInFilter(catalogPageFromMenu.isCategorySelected(selectedCategory), selectedCategory);
+
         System.out.println("✅ Открыта страница: " + currentUrl);
+        System.out.println("✅ Категория '" + selectedCategory + "' отмечена в фильтре");
     }
 }

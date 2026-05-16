@@ -1,4 +1,3 @@
-// src/test/java/helpers/CourseAnalyzer.java
 package helpers;
 
 import assertions.CourseAssertions;
