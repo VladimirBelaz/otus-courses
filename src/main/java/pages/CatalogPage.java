@@ -1,7 +1,6 @@
 package pages;
 
 import annotations.Path;
-import components.CookiePopupComponent;
 import elements.Link;
 import exceptions.CourseNotFoundException;
 import exceptions.ElementInteractionException;
@@ -12,13 +11,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Path("/catalog/courses")
 public class CatalogPage extends AbsBasePage<CatalogPage> {
-
-    @Inject
-    private CookiePopupComponent cookiePopup;
 
     public CatalogPage(WebDriver driver) {
         super(driver);
@@ -29,8 +26,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
         String url = baseUrl + getPath();
         url = url.replaceAll("([^:])(/{2,})", "$1/");
         driver.get(url);
-        cookiePopup.waitAndClose();
-        waiters.waitForPresence(By.cssSelector("a[href*='/lessons/']"));
+        waiters.waitForVisibility(By.cssSelector("h1"));
         return this;
     }
 
@@ -39,14 +35,14 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
     }
 
     public String getCourseTitleFromCard(WebElement card) {
+        // Список возможных селекторов для названия курса (порядок важен)
         String[] selectors = {
                 ".sc-1yg5ro0-0",
                 ".frUeNO",
                 "h6",
                 ".sc-1yg5ro0-1",
                 "[class*='sc-1yg5ro0']",
-                "h6 div",
-                ".sc-1yg5ro0-0 div"
+                "h6 div"
         };
 
         for (String selector : selectors) {
@@ -60,7 +56,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Ошибка при поиске по селектору '" + selector + "': " + e.getMessage());
+                System.out.println("Ошибка при поиске по селектору " + selector + ": " + e.getMessage());
             }
         }
         return null;
@@ -101,8 +97,6 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
     }
 
     public CoursePage clickCourseByName(String courseName) {
-        cookiePopup.closeIfPresent();
-
         Optional<WebElement> courseOpt = findCourseByName(courseName);
 
         if (courseOpt.isPresent()) {

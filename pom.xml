@@ -67,6 +67,7 @@
                     <systemPropertyVariables>
                         <base.url>https://otus.ru</base.url>
                         <browser>chrome</browser>
+                        <course.name>Highload Architect</course.name>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

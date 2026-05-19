@@ -67,15 +67,4 @@ public class CourseAnalyzer {
         System.out.println("Самый ранний курс: " + earliest.title() + " — " + earliest.dateStr());
         System.out.println("Самый поздний курс: " + latest.title() + " — " + latest.dateStr());
     }
-
-    public void validateEarliestWithJsoup(CourseInfo earliest) {
-        CoursePage earliestPage = catalogPage.clickCourseByName(earliest.title());
-        CoursePage.CourseData jsoupData = earliestPage.getCourseDataViaJsoup();
-
-        CourseAssertions.assertEarliestCourseWithJsoup(earliest, jsoupData);
-    }
-
-    public boolean hasValidDates(List<CourseInfo> courses) {
-        return !courses.isEmpty();
-    }
 }

@@ -22,7 +22,7 @@ public class CatalogTests {
     //СЦЕНАРИЙ 1
     @Test
     public void testFindAndOpenCourseByName() {
-        String courseName = "Symfony Framework";
+        String courseName = "Node.js разработчик";
 
         catalogPage.open();
 

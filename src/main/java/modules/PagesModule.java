@@ -3,7 +3,6 @@ package modules;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import components.CookiePopupComponent;
 import components.HeaderComponent;
 import org.openqa.selenium.WebDriver;
 import pages.*;
@@ -38,11 +37,5 @@ public class PagesModule extends AbstractModule {
     @Singleton
     public HeaderComponent getHeaderComponent() {
         return new HeaderComponent(driver);
-    }
-
-    @Provides
-    @Singleton
-    public CookiePopupComponent getCookiePopupComponent() {
-        return new CookiePopupComponent(driver);
     }
 }

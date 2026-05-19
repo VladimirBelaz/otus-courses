@@ -18,9 +18,6 @@ import java.util.Random;
 
 public class HeaderComponent extends AbsCommon {
 
-    @Inject
-    private CookiePopupComponent cookiePopup;
-
     private String selectedCategoryName;
 
     public HeaderComponent(WebDriver driver) {
@@ -28,7 +25,6 @@ public class HeaderComponent extends AbsCommon {
     }
 
     public CatalogPage openRandomCategoryFromTrainingMenu() {
-        cookiePopup.waitAndClose();
 
         WebElement trainingElement = findTrainingElement();
 

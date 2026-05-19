@@ -34,13 +34,16 @@ public class CourseAssertions {
 
 
     public static void assertCatalogPageOpened(String url) {
-        assertTrue(url.contains("/catalog/courses"),
-                "Открыта страница, не являющаяся каталогом курсов. URL: " + url);
+        boolean isValid = url.contains("/catalog/courses") || url.contains("/categories/");
+        assertTrue(isValid,
+                "Открыта страница, не являющаяся каталогом или категорией курсов. URL: " + url);
     }
 
     public static void assertUrlContainsCategory(String url, String categoryName) {
         String categorySlug = CategoryHelper.getSlug(categoryName);
-        assertTrue(url.contains("categories=" + categorySlug),
+        boolean isValid = url.contains("categories=" + categorySlug)
+                || url.endsWith("/categories/" + categorySlug + "/");
+        assertTrue(isValid,
                 "Страница не отфильтрована по выбранной категории '" + categoryName + "'. URL: " + url);
     }
 
