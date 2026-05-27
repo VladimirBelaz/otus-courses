@@ -24,7 +24,8 @@ public final class CategoryHelper {
         CATEGORY_SLUG_MAP.put("корпоративные курсы", "corporate");
     }
 
-    private CategoryHelper() {}
+    private CategoryHelper() {
+    }
 
     public static String getSlug(String categoryName) {
         String key = categoryName.toLowerCase();

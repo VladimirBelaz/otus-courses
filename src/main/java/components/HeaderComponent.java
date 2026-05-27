@@ -5,7 +5,6 @@ import elements.Link;
 import exceptions.CategoryNotFoundException;
 import exceptions.ElementInteractionException;
 import exceptions.TrainingMenuNotFoundException;
-import jakarta.inject.Inject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;

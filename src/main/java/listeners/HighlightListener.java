@@ -23,6 +23,7 @@ public class HighlightListener implements WebDriverListener {
             js.executeScript("arguments[0].style.outlineOffset = '2px';", element);
             js.executeScript("arguments[0].style.borderRadius = '4px';", element);
             js.executeScript("setTimeout(() => arguments[0].style.outline = '', 400);", element);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 }

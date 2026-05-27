@@ -7,7 +7,13 @@ import pages.CatalogPage;
 import pages.CoursePage;
 import pages.MainPage;
 
-import static assertions.CourseAssertions.*;
+import static assertions.CourseAssertions.assertCatalogPageOpened;
+import static assertions.CourseAssertions.assertCategorySelectedInFilter;
+import static assertions.CourseAssertions.assertCourseExists;
+import static assertions.CourseAssertions.assertCourseTitleMatches;
+import static assertions.CourseAssertions.assertCoursesNotEmpty;
+import static assertions.CourseAssertions.assertEarliestCourseWithJsoup;
+import static assertions.CourseAssertions.assertUrlContainsCategory;
 
 @ExtendWith(UIExtension.class)
 public class CatalogTests {
@@ -22,7 +28,7 @@ public class CatalogTests {
     //СЦЕНАРИЙ 1
     @Test
     public void testFindAndOpenCourseByName() {
-        String courseName = "Node.js разработчик";
+        String courseName = "Оптимизация бизнес-процессов";
 
         catalogPage.open();
 

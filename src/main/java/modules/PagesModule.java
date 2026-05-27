@@ -5,7 +5,9 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import components.HeaderComponent;
 import org.openqa.selenium.WebDriver;
-import pages.*;
+import pages.CatalogPage;
+import pages.CoursePage;
+import pages.MainPage;
 
 public class PagesModule extends AbstractModule {
 

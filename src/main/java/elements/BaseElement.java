@@ -1,10 +1,10 @@
 package elements;
 
+import listeners.DriverManager;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import listeners.DriverManager;
 
 import java.time.Duration;
 
@@ -27,7 +27,8 @@ public abstract class BaseElement {
             js.executeScript("arguments[0].style.outlineOffset = '2px';", element);
             js.executeScript("arguments[0].style.borderRadius = '4px';", element);
             js.executeScript("setTimeout(() => arguments[0].style.outline = '', 400);", element);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     public boolean isDisplayed() {

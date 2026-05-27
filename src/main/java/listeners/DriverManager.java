@@ -3,17 +3,17 @@ package listeners;
 import org.openqa.selenium.WebDriver;
 
 public class DriverManager {
-    private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+    private static final ThreadLocal<WebDriver> DRIVER = new ThreadLocal<>();
 
     public static void setDriver(WebDriver webDriver) {
-        driver.set(webDriver);
+        DRIVER.set(webDriver);
     }
 
     public static WebDriver getDriver() {
-        return driver.get();
+        return DRIVER.get();
     }
 
     public static void removeDriver() {
-        driver.remove();
+        DRIVER.remove();
     }
 }

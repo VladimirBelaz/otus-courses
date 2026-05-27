@@ -2,7 +2,6 @@ package pages;
 
 import annotations.Path;
 import commons.AbsCommon;
-import jakarta.inject.Inject;
 import org.openqa.selenium.WebDriver;
 
 

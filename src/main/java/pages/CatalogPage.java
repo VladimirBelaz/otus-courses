@@ -4,14 +4,12 @@ import annotations.Path;
 import elements.Link;
 import exceptions.CourseNotFoundException;
 import exceptions.ElementInteractionException;
-import jakarta.inject.Inject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Path("/catalog/courses")

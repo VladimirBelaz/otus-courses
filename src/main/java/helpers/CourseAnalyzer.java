@@ -1,11 +1,9 @@
 package helpers;
 
-import assertions.CourseAssertions;
-import pages.CatalogPage;
-import pages.CoursePage;
-import utils.DateUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import pages.CatalogPage;
+import utils.DateUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +16,8 @@ public class CourseAnalyzer {
         this.catalogPage = catalogPage;
     }
 
-    public record CourseInfo(String title, String dateStr, LocalDate date) {}
+    public record CourseInfo(String title, String dateStr, LocalDate date) {
+    }
 
     public List<CourseInfo> getAllCourseInfos() {
         List<WebElement> courseCards = catalogPage.getAllCourseCards();

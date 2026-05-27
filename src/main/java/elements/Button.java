@@ -10,7 +10,7 @@ public class Button extends BaseElement {
     }
 
     public void click() {
-        highlight();  
+        highlight();
         wait.until(ExpectedConditions.elementToBeClickable(element));
         element.click();
     }

@@ -40,19 +40,15 @@ public class CoursePage extends AbsBasePage<CoursePage> {
     public CourseData getCourseDataViaJsoup() {
         String url = driver.getCurrentUrl();
         try {
-            Document doc = Jsoup.connect(url)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-                    .timeout(10000)
-                    .get();
-
+            Document doc = Jsoup.connect(url).get();
             String title = doc.select("h1").text();
             String startDate = doc.select(".sc-157icee-1").text();
-
             return new CourseData(title, startDate);
         } catch (IOException e) {
             throw new PageLoadingException(url, e);
         }
     }
 
-    public record CourseData(String title, String startDate) {}
+    public record CourseData(String title, String startDate) {
+    }
 }
