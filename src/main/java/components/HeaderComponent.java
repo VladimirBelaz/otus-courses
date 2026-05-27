@@ -84,7 +84,7 @@ public class HeaderComponent extends AbsCommon {
         try {
             waiters.waitForVisibility(By.cssSelector(".sc-1youhxc-1"));
         } catch (Exception e) {
-            // Элемент может появиться позже, продолжаем поиск
+            System.out.println("Элемент .sc-1youhxc-1 не найден: " + e.getMessage());
         }
 
         List<WebElement> elements = driver.findElements(By.cssSelector(".sc-1youhxc-1"));
