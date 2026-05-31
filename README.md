@@ -33,20 +33,20 @@ mvn clean test -Dbrowser=chrome
 ```text
 src/main/java/
 ├── annotations/     # Аннотации для маршрутизации
+├── assertions/      # Кастомные ассерты
 ├── commons/         # Базовые классы
 ├── components/      # Переиспользуемые компоненты (Header, CookiePopup)
 ├── elements/        # Кастомные WebElement (Button, Link, TextBlock)
 ├── exceptions/      # Пользовательские исключения
+├── extensions/      # Расширения JUnit
 ├── factory/         # Фабрика драйверов с листенерами
+├── helpers/         # Вспомогательные классы для тестов
 ├── listeners/       # Слушатели для подсветки элементов
 ├── modules/         # DI модули (Google Guice)
 ├── pages/           # Page Objects
 └── utils/           # Утилиты (Waiters, DateUtils)
 
 src/test/java/
-├── assertions/      # Кастомные ассерты
-├── extensions/      # Расширения JUnit
-├── helpers/         # Вспомогательные классы для тестов
 └── CatalogTests.java
 ```
 
