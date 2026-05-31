@@ -23,22 +23,21 @@ public class CatalogTests {
 
     @Inject
     private CatalogPage catalogPage;
+
+    @Inject
     private CourseAnalyzer analyzer;
 
     //СЦЕНАРИЙ 1
     @Test
     public void testFindAndOpenCourseByName() {
-        String courseName = "Оптимизация бизнес-процессов";
-
+        String courseName = "DevOps практики и инструменты";
         catalogPage.open();
 
         var courseOpt = catalogPage.findCourseByName(courseName);
-
         assertCourseExists(courseOpt.isPresent(), courseName);
 
         String actualTitle = catalogPage.getCourseTitleFromCard(courseOpt.get());
         CoursePage coursePage = catalogPage.clickCourseByName(courseName);
-
         assertCourseTitleMatches(actualTitle, coursePage.getCourseTitle());
     }
 
@@ -46,7 +45,6 @@ public class CatalogTests {
     @Test
     public void testFindEarliestAndLatestCourseDates() {
         catalogPage.open();
-        analyzer = new CourseAnalyzer(catalogPage);
 
         var courses = analyzer.getAllCourseInfos();
         assertCoursesNotEmpty(courses);

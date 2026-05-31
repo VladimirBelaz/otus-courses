@@ -1,5 +1,6 @@
 package helpers;
 
+import jakarta.inject.Inject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import pages.CatalogPage;
@@ -12,6 +13,7 @@ public class CourseAnalyzer {
 
     private final CatalogPage catalogPage;
 
+    @Inject
     public CourseAnalyzer(CatalogPage catalogPage) {
         this.catalogPage = catalogPage;
     }

@@ -4,6 +4,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import components.HeaderComponent;
+import helpers.CourseAnalyzer;
 import org.openqa.selenium.WebDriver;
 import pages.CatalogPage;
 import pages.CoursePage;
@@ -33,6 +34,12 @@ public class PagesModule extends AbstractModule {
     @Singleton
     public CoursePage getCoursePage() {
         return new CoursePage(driver);
+    }
+
+    @Provides
+    @Singleton
+    public CourseAnalyzer getCourseAnalyzer(CatalogPage catalogPage) {
+        return new CourseAnalyzer(catalogPage);
     }
 
     @Provides
