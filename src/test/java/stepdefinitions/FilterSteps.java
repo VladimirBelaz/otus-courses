@@ -19,11 +19,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,9 +63,7 @@ public class FilterSteps {
                 WebElement showMore = driver.findElement(By.cssSelector(".sc-1qig7zt-0.bYRRHi.sc-prqxfo-0.cXVWAS"));
                 if (showMore.isDisplayed()) {
                     ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", showMore);
-                    Thread.sleep(500);
-                    showMore.click();
-                    Thread.sleep(1000);
+                   showMore.click();
                 } else {
                     break;
                 }
@@ -218,7 +214,6 @@ public class FilterSteps {
             return;
         }
 
-        // ========== ИСПОЛЬЗОВАНИЕ STREAM FILTER ==========
         List<CoursePriceInfo> validCourses = coursesWithPrices.stream()
                 .filter(c -> c.price() > 0)
                 .filter(c -> c.title() != null && !c.title().isEmpty())
@@ -379,17 +374,12 @@ public class FilterSteps {
             if (showMoreButton.isDisplayed() && showMoreButton.isEnabled()) {
                 // Прокручиваем к кнопке
                 ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", showMoreButton);
-                Thread.sleep(500);
 
                 showMoreButton.click();
                 System.out.println("Нажата кнопка 'Показать еще 3'");
 
-                // Ждём появления новых курсов
-                Thread.sleep(2000);
-
                 // Проверяем, что кнопка исчезла или стала неактивной
                 try {
-                    Thread.sleep(1000);
                     if (showMoreButton.isDisplayed()) {
                         System.out.println("Кнопка всё ещё видна, возможно, есть ещё курсы");
                     } else {
@@ -448,7 +438,6 @@ public class FilterSteps {
 
             try {
                 driver.get(url);
-                Thread.sleep(1000);
 
                 int price = extractPriceFromCoursePage(wait);
 

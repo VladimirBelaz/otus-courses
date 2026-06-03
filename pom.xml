@@ -85,6 +85,10 @@
                         <browser>chrome</browser>
                         <course.name>Highload Architect</course.name>
                     </systemPropertyVariables>
+                    <includes>
+                        <include>**/CucumberRunner.java</include>
+                        <include>**/*Tests.java</include>
+                    </includes>
                 </configuration>
             </plugin>
 
