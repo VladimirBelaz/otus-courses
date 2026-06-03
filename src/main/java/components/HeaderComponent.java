@@ -101,4 +101,56 @@ public class HeaderComponent extends AbsCommon {
 
         return null;
     }
+
+    public CatalogPage navigateToCatalog() {
+
+        CatalogPage catalogPage = new CatalogPage(driver);
+        catalogPage.open();
+        return catalogPage;
+    }
+
+    public CatalogPage openCategory(String categoryName) {
+
+        WebElement trainingElement = findTrainingElement();
+        if (trainingElement == null) {
+            throw new RuntimeException("Элемент 'Обучение' не найден");
+        }
+
+        Actions actions = new Actions(driver);
+        actions.moveToElement(trainingElement).perform();
+
+        List<WebElement> links = driver.findElements(By.cssSelector(".sc-4zz0i4-0, .sc-1kjc6dh-0 a"));
+        WebElement targetLink = null;
+
+        for (WebElement link : links) {
+            if (link.getText().equalsIgnoreCase(categoryName)) {
+                targetLink = link;
+                break;
+            }
+        }
+
+        if (targetLink == null) {
+            throw new RuntimeException("Категория '" + categoryName + "' не найдена в меню");
+        }
+
+        targetLink.click();
+
+        return new CatalogPage(driver);
+    }
+
+    public CatalogPage openPreparatoryCourses() {
+
+        WebElement trainingElement = findTrainingElement();
+        if (trainingElement == null) {
+            throw new RuntimeException("Элемент 'Обучение' не найден");
+        }
+
+        Actions actions = new Actions(driver);
+        actions.moveToElement(trainingElement).perform();
+
+        WebElement preparatoryLink = driver.findElement(By.cssSelector("a[href*='/categories/online']"));
+        preparatoryLink.click();
+
+        return new CatalogPage(driver);
+    }
 }

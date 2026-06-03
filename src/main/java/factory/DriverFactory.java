@@ -2,34 +2,47 @@ package factory;
 
 import exceptions.BrowserNotSupportedException;
 import factory.settings.ChromeSettings;
+import factory.settings.FirefoxSettings;
 import listeners.DriverManager;
 import listeners.HighlightListener;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 
 public class DriverFactory {
 
-    private String browser = System.getProperty("browser", "chrome");
-
+    // Метод без параметра - использует значение по умолчанию
     public WebDriver create() {
-        WebDriver driver;
+        return create(System.getProperty("browser", "chrome"));
+    }
 
-        switch (browser.toLowerCase()) {
+    // Метод с параметром - создаёт драйвер для указанного браузера
+    public WebDriver create(String browserName) {
+        WebDriver driver;
+        AbstractDriverOptions options;
+
+        switch (browserName.toLowerCase()) {
             case "chrome" -> {
-                ChromeOptions options = (ChromeOptions) new ChromeSettings().settings();
-                options.addArguments("--remote-allow-origins=*");
-                options.addArguments("--disable-notifications");
-                driver = new ChromeDriver(options);
+                ChromeSettings chromeSettings = new ChromeSettings();
+                options = chromeSettings.settings();
+                driver = new ChromeDriver((ChromeOptions) options);
             }
-            default -> throw new BrowserNotSupportedException(browser);
+            case "firefox" -> {
+                FirefoxSettings firefoxSettings = new FirefoxSettings();
+                options = firefoxSettings.settings();
+                driver = new FirefoxDriver((FirefoxOptions) options);
+            }
+            default -> throw new BrowserNotSupportedException(browserName);
         }
 
         WebDriver decoratedDriver = new EventFiringDecorator(new HighlightListener()).decorate(driver);
         DriverManager.setDriver(decoratedDriver);
 
-        driver.manage().window().maximize();
+        decoratedDriver.manage().window().maximize();
 
         return decoratedDriver;
     }
