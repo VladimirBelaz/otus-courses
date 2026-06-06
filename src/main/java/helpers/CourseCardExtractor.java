@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CourseCardExtractor {
 
-    public static String getCourseTitle(WebElement card) {
+    public static String getCourseTitleFromCard(WebElement card) {
         String[] selectors = {
                 ".sc-1yg5ro0-0", ".frUeNO", "h6",
                 ".sc-1yg5ro0-1", "[class*='sc-1yg5ro0']", "h6 div"

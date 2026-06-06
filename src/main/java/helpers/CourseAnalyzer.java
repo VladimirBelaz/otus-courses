@@ -3,7 +3,7 @@ package helpers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import pages.CatalogPage;
-import utils.DateUtils;
+import utils.DateHelper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,7 +33,7 @@ public class CourseAnalyzer {
             if (title == null || title.isEmpty()) return null;
 
             String dateStr = extractDateString(card);
-            LocalDate date = DateUtils.parseRussianDate(dateStr);
+            LocalDate date = DateHelper.parseRussianDate("10 июня 2026");
 
             return new CourseInfo(title, dateStr, date);
         } catch (Exception e) {

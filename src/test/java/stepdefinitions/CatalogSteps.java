@@ -26,9 +26,4 @@ public class CatalogSteps {
         }
         System.out.println("Курс найден: " + courseName);
     }
-
-    @Тогда("я вижу корректную страницу курса")
-    public void checkCoursePage() {
-        // передаём управление CourseSteps
-    }
 }
