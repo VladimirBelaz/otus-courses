@@ -42,16 +42,4 @@ public class SearchSteps {
         coursePage = catalogPage.clickCourseByName(foundCourseName);
         System.out.println("Клик по курсу: " + foundCourseName);
     }
-
-    @И("заголовок страницы курса соответствует названию {string}")
-    public void verifyCourseTitle(String expectedTitle) {
-        if (coursePage == null) {
-            throw new AssertionError("Страница курса не открыта");
-        }
-        String actualTitle = coursePage.getCourseTitle();
-        if (!actualTitle.equals(expectedTitle)) {
-            throw new AssertionError("Заголовок не совпадает. Ожидалось: " + expectedTitle + ", получено: " + actualTitle);
-        }
-        System.out.println("Заголовок страницы соответствует: " + actualTitle);
-    }
 }

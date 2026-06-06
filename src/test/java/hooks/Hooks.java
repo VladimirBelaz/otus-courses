@@ -1,4 +1,4 @@
-package stepdefinitions;
+package hooks;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -10,8 +10,7 @@ public class Hooks {
 
     @Before
     public void setUp(Scenario scenario) {
-        // НЕ создаём драйвер
-        // Он будет создан в шаге "я открываю браузер"
+        //драйвер будет создан в шаге "я открываю браузер"
         System.out.println("Hook: начало сценария - " + scenario.getName());
     }
 
