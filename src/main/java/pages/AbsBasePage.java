@@ -4,10 +4,9 @@ import annotations.Path;
 import commons.AbsCommon;
 import org.openqa.selenium.WebDriver;
 
-
 public abstract class AbsBasePage<T> extends AbsCommon {
 
-    protected String baseUrl = System.getProperty("base.url");
+    protected String baseUrl = System.getProperty("base.url", "https://otus.ru");
 
     public AbsBasePage(WebDriver driver) {
         super(driver);
@@ -30,7 +29,10 @@ public abstract class AbsBasePage<T> extends AbsCommon {
     }
 
     public String getCurrentUrl() {
-
         return driver.getCurrentUrl();
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
     }
 }

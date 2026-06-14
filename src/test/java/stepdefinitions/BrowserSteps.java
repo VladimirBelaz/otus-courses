@@ -4,10 +4,12 @@ import factory.DriverFactory;
 import io.cucumber.java.ru.*;
 import listeners.DriverManager;
 import org.openqa.selenium.WebDriver;
+import pages.MainPage;
 
 public class BrowserSteps {
 
     private WebDriver driver;
+    private MainPage mainPage;
 
     @Допустим("я открываю браузер {string}")
     public void openBrowser(String browserName) {
@@ -19,7 +21,8 @@ public class BrowserSteps {
 
     @Допустим("я открываю главную страницу")
     public void openMainPage() {
-        driver.get("https://otus.ru");
+        mainPage = new MainPage(driver);
+        mainPage.open();
         System.out.println("Главная страница открыта");
     }
 
