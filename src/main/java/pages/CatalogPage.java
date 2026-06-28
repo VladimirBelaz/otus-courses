@@ -7,9 +7,11 @@ import exceptions.ElementInteractionException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Path("/catalog/courses")
@@ -18,6 +20,15 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
     public CatalogPage(WebDriver driver) {
         super(driver);
     }
+    private static final By COURSE_CARD = By.cssSelector("a[href*='/lessons/']");
+    private static final String[] COURSE_TITLE_SELECTORS = {
+            ".sc-1yg5ro0-0",
+            ".frUeNO",
+            "h6",
+            ".sc-1yg5ro0-1",
+            "[class*='sc-1yg5ro0']",
+            "h6 div"
+    };
 
     @Override
     public CatalogPage open() {
@@ -33,112 +44,98 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
     }
 
     public String getCourseTitleFromCard(WebElement card) {
-        // Список возможных селекторов для названия курса (порядок важен)
-        String[] selectors = {
-                ".sc-1yg5ro0-0",
-                ".frUeNO",
-                "h6",
-                ".sc-1yg5ro0-1",
-                "[class*='sc-1yg5ro0']",
-                "h6 div"
-        };
 
-        for (String selector : selectors) {
-            try {
-                List<WebElement> elements = card.findElements(By.cssSelector(selector));
-                for (WebElement el : elements) {
-                    String text = el.getText();
-                    if (text != null && !text.isEmpty() && text.length() < 100
-                            && !text.contains("Курс") && !text.contains("Специализация")) {
-                        return text;
-                    }
+        // Список возможных селекторов для названия курса (порядок важен)
+        for (String selector : COURSE_TITLE_SELECTORS) {
+            List<WebElement> elements = card.findElements(By.cssSelector(selector));
+            for (WebElement el : elements) {
+                String text = el.getText();
+                if (isCourseTitle(text)) {
+                    return text;
                 }
-            } catch (Exception e) {
-                System.out.println("Ошибка при поиске по селектору " + selector + ": " + e.getMessage());
             }
         }
         return null;
     }
 
     public Optional<WebElement> findCourseByName(String courseName) {
-        waiters.waitForPresence(By.cssSelector("a[href*='/lessons/']"));
+        waiters.waitForPresence(COURSE_CARD);
 
         List<WebElement> cards = getCourseCards();
 
-        System.out.println("Найдено карточек курсов: " + cards.size());
+        Optional<WebElement> partial = Optional.empty();
 
-        Optional<WebElement> exactMatch = cards.stream()
-                .filter(card -> {
-                    String title = getCourseTitleFromCard(card);
-                    return title != null && title.equalsIgnoreCase(courseName);
-                })
-                .findFirst();
+        for (WebElement card : cards) {
 
-        if (exactMatch.isPresent()) {
-            System.out.println("Найдено точное совпадение: " + courseName);
-            return exactMatch;
+            String title = getCourseTitleFromCard(card);
+
+            if (title == null)
+                continue;
+
+            if (title.equalsIgnoreCase(courseName))
+                return Optional.of(card);
+
+            if (partial.isEmpty()
+                    && title.toLowerCase().contains(courseName.toLowerCase()))
+                partial = Optional.of(card);
         }
 
-        Optional<WebElement> partialMatch = cards.stream()
-                .filter(card -> {
-                    String title = getCourseTitleFromCard(card);
-                    return title != null && title.toLowerCase().contains(courseName.toLowerCase());
-                })
-                .findFirst();
-
-        if (partialMatch.isPresent()) {
-            System.out.println("Найдено частичное совпадение для: " + courseName);
-            return partialMatch;
-        }
-
-        return Optional.empty();
+        return partial;
     }
 
     public CoursePage clickCourseByName(String courseName) {
-        Optional<WebElement> courseOpt = findCourseByName(courseName);
+        WebElement courseElement = findCourseByName(courseName)
+                .orElseThrow(() -> new CourseNotFoundException(courseName));
+        try {
+            Link courseLink = new Link(courseElement);
 
-        if (courseOpt.isPresent()) {
-            WebElement courseElement = courseOpt.get();
-            try {
-                Link courseLink = new Link(courseElement);
-                String title = courseLink.getText();
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", courseElement);
 
-                System.out.println("Кликаем по курсу: " + title);
+            courseLink.click();
 
-                ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", courseElement);
-
-                courseLink.click();
-
-                return new CoursePage(driver);
-            } catch (Exception e) {
-                throw new ElementInteractionException("Клик по курсу: " + courseName, e);
-            }
+            return new CoursePage(driver);
+        } catch (WebDriverException e) {
+            throw new ElementInteractionException("Клик по курсу: " + courseName);
         }
-
-        throw new CourseNotFoundException(courseName);
     }
 
     public List<WebElement> getAllCourseCards() {
-        waiters.waitForPresence(By.cssSelector("a[href*='/lessons/']"));
+        waiters.waitForPresence(COURSE_CARD);
         return getCourseCards();
+    }
+
+    private boolean isCourseTitle(String text) {
+        return text != null
+                && !text.isBlank()
+                && text.length() < 100
+                && !text.contains("Курс")
+                && !text.contains("Специализация");
     }
 
     public boolean isCategorySelected(String categoryName) {
         try {
-            List<WebElement> labels = driver.findElements(By.cssSelector(".sc-1fry39v-1"));
+            // Ждем появления элемента с категорией
+            WebElement label = waiters.waitForOptionalElement(
+                    By.xpath(String.format(
+                            "//label[contains(normalize-space(), '%s')]",
+                            categoryName
+                    )),5
+            );
 
-            for (WebElement label : labels) {
-                if (label.getText().equalsIgnoreCase(categoryName)) {
-                    String forId = label.getAttribute("for");
-                    if (forId != null) {
-                        WebElement checkbox = driver.findElement(By.id(forId));
-                        return checkbox.isSelected();
-                    }
-                }
+            if (label == null) {
+                System.out.println("Категория '" + categoryName + "' не найдена в фильтре");
+                return false;
             }
+
+            String forId = label.getAttribute("for");
+            if (forId != null) {
+                WebElement checkbox = driver.findElement(By.id(forId));
+                return checkbox.isSelected();
+            }
+
             return false;
-        } catch (Exception e) {
-            throw new ElementInteractionException("Проверка категории: " + categoryName, e);
+        } catch (NoSuchElementException ignored) {
+            throw new ElementInteractionException("Проверка категории: " + categoryName);
         }
     }
 }

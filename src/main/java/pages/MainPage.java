@@ -4,6 +4,10 @@ import annotations.Path;
 import components.HeaderComponent;
 import jakarta.inject.Inject;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 @Path("/")
 public class MainPage extends AbsBasePage<MainPage> {
@@ -19,6 +23,12 @@ public class MainPage extends AbsBasePage<MainPage> {
     public MainPage open() {
         driver.get(baseUrl + getPath());
         driver.manage().window().maximize();
+
+        // 🔥 Ждем загрузки страницы
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(webDriver -> ((org.openqa.selenium.JavascriptExecutor) webDriver)
+                        .executeScript("return document.readyState").equals("complete"));
+
         return this;
     }
 

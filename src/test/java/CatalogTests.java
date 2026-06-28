@@ -30,7 +30,7 @@ public class CatalogTests {
     //СЦЕНАРИЙ 1
     @Test
     public void testFindAndOpenCourseByName() {
-        String courseName = "DevOps практики и инструменты";
+        String courseName = "Инженер данных";
         catalogPage.open();
 
         var courseOpt = catalogPage.findCourseByName(courseName);

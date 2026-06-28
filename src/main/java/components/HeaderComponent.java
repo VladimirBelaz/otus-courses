@@ -1,104 +1,134 @@
 package components;
 
 import commons.AbsCommon;
-import elements.Link;
 import exceptions.CategoryNotFoundException;
-import exceptions.ElementInteractionException;
 import exceptions.TrainingMenuNotFoundException;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import pages.CatalogPage;
 
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class HeaderComponent extends AbsCommon {
 
+    private static final By TRAINING_MENU = By.cssSelector("[title='Обучение']");
+    private static final By DROPDOWN = By.cssSelector(".sc-piuiz2-0");
+    private static final By CATEGORY_LINKS = By.cssSelector(".sc-piuiz2-0 .sc-ig0m9y-0 a.sc-4zz0i4-0");
+
+    private JavascriptExecutor js;
     private String selectedCategoryName;
 
     public HeaderComponent(WebDriver driver) {
         super(driver);
+        this.js = (JavascriptExecutor) driver;
     }
 
     public CatalogPage openRandomCategoryFromTrainingMenu() {
 
-        WebElement trainingElement = findTrainingElement();
+        WebElement trainingMenu = findTrainingMenu();
 
-        if (trainingElement == null) {
+        openTrainingDropdown(trainingMenu);
+
+        List<WebElement> categories = getAvailableCategories();
+
+        WebElement randomCategory = getRandomCategory(categories);
+
+        selectedCategoryName = extractCategoryName(randomCategory);
+
+        clickCategory(randomCategory);
+
+        return new CatalogPage(driver);
+    }
+
+    private WebElement findTrainingMenu() {
+
+        WebElement trainingMenu = waiters.waitForOptionalElement(TRAINING_MENU, 10);
+
+        if (trainingMenu == null) {
             throw new TrainingMenuNotFoundException();
         }
 
-        System.out.println("Найден элемент 'Обучение'");
+        return trainingMenu;
+    }
 
-        Actions actions = new Actions(driver);
-        actions.moveToElement(trainingElement).perform();
+    private void openTrainingDropdown(WebElement trainingMenu) {
 
-        waiters.waitForVisibility(By.cssSelector(".sc-piuiz2-0"));
+        js.executeScript(
+                "arguments[0].scrollIntoView({block:'center'});",
+                trainingMenu
+        );
 
-        List<WebElement> categoryLinks = driver.findElements(By.cssSelector(".sc-piuiz2-0 a[href*='/categories/']"));
+        js.executeScript(
+                """
+                var event = new MouseEvent(
+                    'mouseover',
+                    {
+                        bubbles:true,
+                        cancelable:true,
+                        view:window
+                    }
+                );
+                arguments[0].dispatchEvent(event);
+                """,
+                trainingMenu
+        );
 
-        List<WebElement> filteredCategories = categoryLinks.stream()
-                .filter(link -> {
-                    String href = link.getAttribute("href");
-                    String text = link.getText();
-                    return !href.contains("/spec")
-                            && !href.contains("/online")
-                            && text != null
-                            && !text.isEmpty()
-                            && text.matches(".*\\d+.*");
-                })
-                .toList();
+        if (waiters.waitForOptionalElement(DROPDOWN, 10) == null) {
+            throw new TrainingMenuNotFoundException("Не удалось открыть меню");
+        }
+    }
 
-        if (filteredCategories.isEmpty()) {
+    private List<WebElement> getAvailableCategories() {
+
+        List<WebElement> categories =
+                driver.findElements(CATEGORY_LINKS)
+                        .stream()
+                        .filter(this::isCourseCategory)
+                        .toList();
+
+        if (categories.isEmpty()) {
             throw new CategoryNotFoundException();
         }
 
-        Random random = new Random();
-        WebElement randomCategoryElement = filteredCategories.get(random.nextInt(filteredCategories.size()));
+        return categories;
+    }
 
-        String fullText = randomCategoryElement.getText();
-        selectedCategoryName = fullText.replaceAll("\\s*\\(\\d+\\)$", "").trim();
+    private boolean isCourseCategory(WebElement element) {
 
-        System.out.println("Выбрана случайная категория: " + selectedCategoryName);
+        String href = element.getAttribute("href");
 
-        try {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", randomCategoryElement);
+        return href != null
+                && !href.contains("/spec")
+                && !href.contains("/online");
+    }
 
-            Link categoryLink = new Link(randomCategoryElement);
-            categoryLink.click();
-        } catch (Exception e) {
-            throw new ElementInteractionException("Клик по категории: " + selectedCategoryName, e);
-        }
+    private WebElement getRandomCategory(List<WebElement> categories) {
 
-        return new CatalogPage(driver);
+        int index = ThreadLocalRandom.current().nextInt(categories.size());
+
+        return categories.get(index);
+    }
+
+    private String extractCategoryName(WebElement category) {
+        return getCategoryName(category)
+                .replaceAll("\\s*\\(\\d+\\)$", "")
+                .trim();
+    }
+
+    private void clickCategory(WebElement category) {
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].click();", category);
     }
 
     public String getSelectedCategoryName() {
         return selectedCategoryName;
     }
 
-    private WebElement findTrainingElement() {
-        try {
-            waiters.waitForVisibility(By.cssSelector(".sc-1youhxc-1"));
-        } catch (Exception e) {
-            System.out.println("Элемент .sc-1youhxc-1 не найден: " + e.getMessage());
-        }
-
-        List<WebElement> elements = driver.findElements(By.cssSelector(".sc-1youhxc-1"));
-        for (WebElement el : elements) {
-            if (el.getText().equals("Обучение")) {
-                return el;
-            }
-        }
-
-        List<WebElement> allElements = driver.findElements(By.cssSelector("[title='Обучение']"));
-        if (!allElements.isEmpty()) {
-            return allElements.get(0);
-        }
-
-        return null;
+    private String getCategoryName(WebElement element) {
+        return (String) js.executeScript(
+                "return arguments[0].textContent.trim();", element);
     }
 }
