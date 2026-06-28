@@ -10,7 +10,7 @@ public class ChromeSettings implements IDriverSettings {
         ChromeOptions options = new ChromeOptions();
 
         // Проверяем переменную headless (по умолчанию true)
-        boolean headless = Boolean.parseBoolean(System.getProperty("headless", "true"));
+        boolean headless = Boolean.parseBoolean(System.getProperty("headless", "false"));
 
         if (headless) {
             options.addArguments("--headless");

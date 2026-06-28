@@ -1,9 +1,33 @@
 package listeners;
 
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverListener;
 
 public class HighlightListener implements WebDriverListener {
+
+    private static final String HIGHLIGHT_SCRIPT = """
+            const el = arguments[0];
+            
+            const oldOutline = el.style.outline;
+            const oldOffset = el.style.outlineOffset;
+            const oldRadius = el.style.borderRadius;
+            const oldTransition = el.style.transition;
+            
+            el.style.transition = "outline .15s ease";
+            el.style.outline = "3px solid red";
+            el.style.outlineOffset = "2px";
+            el.style.borderRadius = "4px";
+            
+            setTimeout(() => {
+                el.style.outline = oldOutline;
+                el.style.outlineOffset = oldOffset;
+                el.style.borderRadius = oldRadius;
+                el.style.transition = oldTransition;
+            }, 400);
+            """;
 
     @Override
     public void beforeClick(WebElement element) {
@@ -16,14 +40,20 @@ public class HighlightListener implements WebDriverListener {
     }
 
     private void highlight(WebElement element) {
+
+        if (element == null) {
+            return;
+        }
+
+        WebDriver driver = DriverManager.getDriver();
+
+        if (!(driver instanceof JavascriptExecutor js)) {
+            return;
+        }
+
         try {
-            var js = (org.openqa.selenium.JavascriptExecutor) DriverManager.getDriver();
-            js.executeScript("arguments[0].style.transition = 'outline 0.15s ease-in-out';", element);
-            js.executeScript("arguments[0].style.outline = '3px solid #ff4444';", element);
-            js.executeScript("arguments[0].style.outlineOffset = '2px';", element);
-            js.executeScript("arguments[0].style.borderRadius = '4px';", element);
-            js.executeScript("setTimeout(() => arguments[0].style.outline = '', 400);", element);
-        } catch (Exception ignored) {
+            js.executeScript(HIGHLIGHT_SCRIPT, element);
+        } catch (WebDriverException ignored) {
         }
     }
 }

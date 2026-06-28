@@ -7,11 +7,17 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 import java.io.IOException;
 
 public class CoursePage extends AbsBasePage<CoursePage> {
+
+    private static final By TITLE = By.cssSelector("h1");
+
+    private static final By START_DATE =
+            By.cssSelector(".sc-157icee-1");
 
     public CoursePage(WebDriver driver) {
         super(driver);
@@ -19,31 +25,33 @@ public class CoursePage extends AbsBasePage<CoursePage> {
 
     public String getCourseTitle() {
         try {
-            WebElement titleElement = waiters.waitForVisibility(By.cssSelector("h1"));
+            WebElement titleElement = waiters.waitForVisibility(TITLE);
             TextBlock titleBlock = new TextBlock(titleElement);
             return titleBlock.getText();
-        } catch (Exception e) {
+        } catch (WebDriverException e) {
             throw new ElementInteractionException("Получение заголовка курса", e);
         }
     }
 
     public String getStartDate() {
         try {
-            WebElement dateElement = waiters.waitForVisibility(By.cssSelector(".sc-157icee-1"));
+            WebElement dateElement = waiters.waitForVisibility(START_DATE);
             TextBlock dateBlock = new TextBlock(dateElement);
             return dateBlock.getText();
         } catch (Exception e) {
-            return "Дата не указана";
+            return null;
         }
     }
 
     public CourseData getCourseDataViaJsoup() {
         String url = driver.getCurrentUrl();
         try {
-            Document doc = Jsoup.connect(url).get();
-            String title = doc.select("h1").text();
-            String startDate = doc.select(".sc-157icee-1").text();
-            return new CourseData(title, startDate);
+            Document document = Jsoup.connect(url).get();
+
+            return new CourseData(
+                    document.select("h1").text(),
+                    document.select(".sc-157icee-1").text()
+            );
         } catch (IOException e) {
             throw new PageLoadingException(url, e);
         }

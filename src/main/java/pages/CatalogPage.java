@@ -34,23 +34,24 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
     @Override
     public CatalogPage open() {
         String url = baseUrl + getPath();
-        url = url.replaceAll("([^:])(/{2,})", "$1/");
         driver.get(url);
         waiters.waitForVisibility(By.cssSelector("h1"));
         return this;
     }
 
     private List<WebElement> getCourseCards() {
-        return driver.findElements(By.cssSelector("a[href*='/lessons/']"));
+        return driver.findElements(COURSE_CARD);
     }
 
     public String getCourseTitleFromCard(WebElement card) {
 
         // Список возможных селекторов для названия курса (порядок важен)
         for (String selector : COURSE_TITLE_SELECTORS) {
-            List<WebElement> elements = card.findElements(By.cssSelector(selector));
-            for (WebElement el : elements) {
-                String text = el.getText();
+
+            for (WebElement element : card.findElements(By.cssSelector(selector))) {
+
+                String text = element.getText();
+
                 if (isCourseTitle(text)) {
                     return text;
                 }
@@ -66,6 +67,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
 
         Optional<WebElement> partial = Optional.empty();
 
+        String expected = courseName.toLowerCase();
         for (WebElement card : cards) {
 
             String title = getCourseTitleFromCard(card);
@@ -77,7 +79,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
                 return Optional.of(card);
 
             if (partial.isEmpty()
-                    && title.toLowerCase().contains(courseName.toLowerCase()))
+                    && title.toLowerCase().contains(expected))
                 partial = Optional.of(card);
         }
 
@@ -85,18 +87,27 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
     }
 
     public CoursePage clickCourseByName(String courseName) {
-        WebElement courseElement = findCourseByName(courseName)
+
+        WebElement course = findCourseByName(courseName)
                 .orElseThrow(() -> new CourseNotFoundException(courseName));
+
         try {
-            Link courseLink = new Link(courseElement);
 
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", courseElement);
+            ((JavascriptExecutor) driver)
+                    .executeScript(
+                            "arguments[0].scrollIntoView({block:'center'});",
+                            course
+                    );
 
-            courseLink.click();
+            new Link(course).click();
 
             return new CoursePage(driver);
+
         } catch (WebDriverException e) {
-            throw new ElementInteractionException("Клик по курсу: " + courseName);
+            throw new ElementInteractionException(
+                    "Не удалось открыть курс: " + courseName,
+                    e
+            );
         }
     }
 
@@ -108,9 +119,9 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
     private boolean isCourseTitle(String text) {
         return text != null
                 && !text.isBlank()
-                && text.length() < 100
                 && !text.contains("Курс")
-                && !text.contains("Специализация");
+                && !text.contains("Специализация")
+                && text.length() < 100;
     }
 
     public boolean isCategorySelected(String categoryName) {
@@ -129,7 +140,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
             }
 
             String forId = label.getAttribute("for");
-            if (forId != null) {
+            if (forId != null && !forId.isBlank()) {
                 WebElement checkbox = driver.findElement(By.id(forId));
                 return checkbox.isSelected();
             }
