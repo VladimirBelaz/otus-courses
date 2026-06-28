@@ -63,16 +63,16 @@ public class HeaderComponent extends AbsCommon {
 
         js.executeScript(
                 """
-                var event = new MouseEvent(
-                    'mouseover',
-                    {
-                        bubbles:true,
-                        cancelable:true,
-                        view:window
-                    }
-                );
-                arguments[0].dispatchEvent(event);
-                """,
+                        var event = new MouseEvent(
+                            'mouseover',
+                            {
+                                bubbles:true,
+                                cancelable:true,
+                                view:window
+                            }
+                        );
+                        arguments[0].dispatchEvent(event);
+                        """,
                 trainingMenu
         );
 

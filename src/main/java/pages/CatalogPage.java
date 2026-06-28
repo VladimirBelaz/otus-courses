@@ -20,6 +20,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
     public CatalogPage(WebDriver driver) {
         super(driver);
     }
+
     private static final By COURSE_CARD = By.cssSelector("a[href*='/lessons/']");
     private static final String[] COURSE_TITLE_SELECTORS = {
             ".sc-1yg5ro0-0",
@@ -119,7 +120,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
                     By.xpath(String.format(
                             "//label[contains(normalize-space(), '%s')]",
                             categoryName
-                    )),5
+                    )), 5
             );
 
             if (label == null) {
