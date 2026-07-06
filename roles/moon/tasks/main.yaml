@@ -1,0 +1,44 @@
+---
+- name: Enable ingress addon
+  shell: minikube addons enable ingress
+
+- name: Create Moon namespace
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Namespace
+    name: moon
+    state: present
+
+- name: Generate values.yaml
+  template:
+    src: values.yaml.j2
+    dest: /tmp/moon-values.yaml
+
+- name: Add Aerokube repository
+  shell: helm repo add aerokube https://charts.aerokube.com/ || true
+
+- name: Update Helm repositories
+  shell: helm repo update || true
+
+- name: Install Moon
+  kubernetes.core.helm:
+    name: moon
+    chart_ref: aerokube/moon2
+    release_namespace: moon
+    create_namespace: false
+    wait: true
+    values_files:
+      - /tmp/moon-values.yaml
+    values:
+      ingress:
+        host: moon.aerokube.local
+
+- name: Install Moon UI
+  kubernetes.core.helm:
+    name: moon-ui
+    chart_ref: aerokube/moon2
+    release_namespace: moon
+    wait: true
+    values:
+      ui:
+        enabled: true

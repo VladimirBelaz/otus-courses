@@ -1,0 +1,11 @@
+---
+- name: Download and install Helm
+  shell: |
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+- name: Check helm version
+  command: helm version
+  register: helm_version
+
+- debug:
+    msg: "Helm installed: {{ helm_version.stdout }}"

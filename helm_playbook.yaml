@@ -1,0 +1,11 @@
+---
+- name: Install Moon environment
+  hosts: otus_server
+  become: true
+
+  roles:
+    - common
+    - docker
+    - helm
+    - minikube
+    - moon

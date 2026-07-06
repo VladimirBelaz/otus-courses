@@ -1,0 +1,8 @@
+default:
+  selenium:
+{% for browser in browsers %}
+    {{ browser.name }}:
+      default: {{ browser.version }}
+      repository: {{ browser.repository }}
+{% endfor %}
+    chrome: null

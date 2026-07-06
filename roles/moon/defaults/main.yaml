@@ -1,0 +1,12 @@
+browsers:
+  - name: chromium
+    version: "100.0.4896.127-0"
+    repository: quay.io/browser/chromium
+
+  - name: firefox
+    version: "100.0-0"
+    repository: quay.io/browser/firefox
+
+  - name: webkit
+    version: "613.1.6.1"
+    repository: quay.io/browser/webkit

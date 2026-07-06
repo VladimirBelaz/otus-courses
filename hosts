@@ -1,0 +1,2 @@
+[otus_server]
+localhost ansible_connection=local
