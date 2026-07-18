@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "course": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      },
+      "age": {
+        "type": "integer"
+      }
+    },
+    "required": [
+      "name",
+      "course",
+      "email",
+      "age"
+    ],
+    "additionalProperties": false
+  }
+}
