@@ -99,7 +99,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
                             course
                     );
 
-            new Link(course).click();
+            course.click();
 
             return new CoursePage(driver);
 
