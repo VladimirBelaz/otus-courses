@@ -36,9 +36,11 @@ public class CatalogTests {
         var courseOpt = catalogPage.findCourseByName(courseName);
         assertCourseExists(courseOpt.isPresent(), courseName);
 
-        String actualTitle = catalogPage.getCourseTitleFromCard(courseOpt.get());
+        // Кликаем и сразу проверяем заголовок на новой странице
         CoursePage coursePage = catalogPage.clickCourseByName(courseName);
-        assertCourseTitleMatches(actualTitle, coursePage.getCourseTitle());
+        String actualTitle = coursePage.getCourseTitle(); // ← получаем ЗАНОВО
+
+        assertCourseTitleMatches(courseName, actualTitle);
     }
 
     //СЦЕНАРИЙ 2

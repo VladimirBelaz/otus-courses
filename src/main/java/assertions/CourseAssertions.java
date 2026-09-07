@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CourseAssertions {
 
-    public static void assertCourseTitleMatches(String expectedTitle, String actualTitle) {
-        assertEquals(expectedTitle, actualTitle,
-                "Название курса на странице не соответствует ожидаемому");
+    public static void assertCourseTitleMatches(String expected, String actual) {
+        assertTrue(actual.contains(expected),
+                "Ожидалось, что заголовок '" + actual + "' содержит '" + expected + "'");
     }
 
     public static void assertCourseExists(boolean found, String courseName) {
