@@ -99,7 +99,7 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
                             course
                     );
 
-            course.click();
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", course);
 
             return new CoursePage(driver);
 
