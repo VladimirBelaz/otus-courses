@@ -92,7 +92,6 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
                 .orElseThrow(() -> new CourseNotFoundException(courseName));
 
         try {
-
             ((JavascriptExecutor) driver)
                     .executeScript(
                             "arguments[0].scrollIntoView({block:'center'});",
@@ -100,6 +99,9 @@ public class CatalogPage extends AbsBasePage<CatalogPage> {
                     );
 
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", course);
+
+            // Ждём, пока заголовок страницы станет видимым
+            waiters.waitForVisibility(By.cssSelector("h1"));
 
             return new CoursePage(driver);
 
