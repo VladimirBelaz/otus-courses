@@ -9,7 +9,7 @@ class ScoreTest extends BaseTest {
 
     @Test
     void shouldDeserializeScore() {
-        Score score = helper.get("http://localhost:8080/user/get/1", Score.class);
+        Score score = helper.get("http://localhost:8090/user/get/1", Score.class);
         assertEquals("Test user", score.getName());
         assertEquals(78, score.getScore());
     }

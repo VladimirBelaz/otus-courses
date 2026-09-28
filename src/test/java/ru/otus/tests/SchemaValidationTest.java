@@ -9,7 +9,7 @@ class SchemaValidationTest extends BaseTest {
 
     @Test
     void shouldValidateScoreSchema() {
-        String response = helper.get("http://localhost:8080/user/get/1");
+        String response = helper.get("http://localhost:8090/user/get/1");
         given()
                 .body(response)
                 .then()
@@ -18,7 +18,7 @@ class SchemaValidationTest extends BaseTest {
 
     @Test
     void shouldValidateUsersSchema() {
-        String response = helper.get("http://localhost:8080/user/get/all");
+        String response = helper.get("http://localhost:8090/user/get/all");
         given()
                 .body(response)
                 .then()
@@ -27,7 +27,7 @@ class SchemaValidationTest extends BaseTest {
 
     @Test
     void shouldValidateCoursesSchema() {
-        String response = helper.get("http://localhost:8080/course/get/all");
+        String response = helper.get("http://localhost:8090/course/get/all");
         given()
                 .body(response)
                 .then()

@@ -10,14 +10,14 @@ public class StubServer {
     private final WireMockServer server;
 
     public StubServer() {
-        server = new WireMockServer(options().port(8080));
+        server = new WireMockServer(options().port(8090));
     }
 
     public void start() {
 
         server.start();
 
-        configureFor("localhost",8080);
+        configureFor("localhost",8090);
 
         new UserStub();
         new ScoreStub();

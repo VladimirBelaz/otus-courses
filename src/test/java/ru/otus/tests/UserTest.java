@@ -13,7 +13,7 @@ class UserTest extends BaseTest {
     void shouldReturnUsers() {
 
         List<User> users = helper.getList(
-                "http://localhost:8080/user/get/all",
+                "http://localhost:8090/user/get/all",
                 User.class);
 
         assertEquals(1, users.size());

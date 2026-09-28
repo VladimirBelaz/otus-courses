@@ -47,7 +47,7 @@ public class ApiSteps {
 
     @Когда("я отправляю запрос {string}")
     public void request(String endpoint) {
-        response = helper.get("http://localhost:8080" + endpoint);
+        response = helper.get("http://localhost:8090" + endpoint);
     }
 
     @Тогда("поле {string} существует")

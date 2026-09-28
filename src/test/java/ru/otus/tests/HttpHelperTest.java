@@ -8,7 +8,7 @@ class HttpHelperTest extends BaseTest {
 
     @Test
     void shouldReturnUserScore() {
-        String response = helper.get("http://localhost:8080/user/get/1");
+        String response = helper.get("http://localhost:8090/user/get/1");
         System.out.println(response);
         assertTrue(response.contains("Test user"));
         assertTrue(response.contains("78"));

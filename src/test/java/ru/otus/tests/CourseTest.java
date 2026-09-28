@@ -13,7 +13,7 @@ class CourseTest extends BaseTest {
     void shouldReturnCourses() {
 
         List<Course> courses = helper.getList(
-                "http://localhost:8080/course/get/all",
+                "http://localhost:8090/course/get/all",
                 Course.class);
 
         assertEquals(2, courses.size());

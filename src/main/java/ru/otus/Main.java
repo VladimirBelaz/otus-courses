@@ -11,7 +11,7 @@ public class Main {
         server.start();
 
         System.out.println("WireMock started");
-        System.out.println("http://localhost:8080/user/get/1");
+        System.out.println("http://localhost:8090/user/get/1");
 
         Thread.currentThread().join();
     }
