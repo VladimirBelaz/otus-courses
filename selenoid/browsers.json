@@ -1,0 +1,24 @@
+{
+  "chrome": {
+    "default": "128.0",
+    "versions": {
+      "128.0": {
+        "image": "selenoid/chrome:128.0",
+        "port": "4444",
+        "path": "/",
+        "default": "true"
+      }
+    }
+  },
+  "firefox": {
+    "default": "129.0",
+    "versions": {
+      "129.0": {
+        "image": "selenoid/firefox:129.0",
+        "port": "4444",
+        "path": "/",
+        "default": "true"
+      }
+    }
+  }
+}
