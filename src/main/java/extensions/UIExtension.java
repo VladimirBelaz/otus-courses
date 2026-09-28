@@ -41,11 +41,26 @@ public class UIExtension implements BeforeEachCallback, AfterEachCallback {
     }
 
     private void attachVideo(String sessionId) {
-        String videoHtml = "<html><body>"
-                + "<video controls width='100%'>"
-                + "<source src='" + SELENOID_UI_URL + "/video/" + sessionId + ".mp4' type='video/mp4'>"
-                + "</video>"
-                + "</body></html>";
-        Allure.addAttachment("Video", "text/html", videoHtml, ".html");
+        String videoUrl = SELENOID_UI_URL + "/video/" + sessionId + ".mp4";
+        try {
+            // Ждём, пока видео станет доступно
+            java.io.InputStream videoStream = null;
+            for (int i = 0; i < 15; i++) {
+                try {
+                    videoStream = new java.net.URL(videoUrl).openStream();
+                    break;
+                } catch (java.io.FileNotFoundException e) {
+                    Thread.sleep(2000);
+                }
+            }
+            if (videoStream == null) {
+                Allure.addAttachment("Video", "text/plain", "Видео не найдено: " + videoUrl);
+                return;
+            }
+            // Прикрепляем как MP4
+            Allure.addAttachment("Video", "video/mp4", videoStream, "mp4");
+        } catch (Exception e) {
+            Allure.addAttachment("Video Error", "text/plain", e.toString());
+        }
     }
 }
