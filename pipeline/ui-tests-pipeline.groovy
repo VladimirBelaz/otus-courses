@@ -32,12 +32,13 @@ pipeline {
         stage('Run UI tests') {
             steps {
                 sh """
-                    mvn clean test \\
-                        -Dbrowser=${params.BROWSER} \\
-                        -Dheadless=${params.HEADLESS} \\
-                        -Dbase.url=${params.BASE_URL} \\
-                        -Dselenoid.url=${params.SELENOID_URL}
-                """
+            mvn clean test \\
+                -Dbrowser=${params.BROWSER} \\
+                -Dheadless=${params.HEADLESS} \\
+                -Dbase.url=${params.BASE_URL} \\
+                -Dselenoid.url=http://host.docker.internal:4444 \\
+                -Dselenoid.ui.url=http://host.docker.internal:8081
+        """
             }
         }
 
