@@ -3,7 +3,6 @@ services:
     image: aerokube/selenoid:latest-release
     container_name: selenoid
     restart: unless-stopped
-    network_mode: bridge
     ports:
       - "4444:4444"
     volumes:
@@ -34,7 +33,6 @@ services:
     image: aerokube/selenoid-ui:latest-release
     container_name: selenoid-ui
     restart: unless-stopped
-    network_mode: bridge
     ports:
       - "8081:8080"
     depends_on:
