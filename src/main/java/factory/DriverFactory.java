@@ -59,13 +59,18 @@ public class DriverFactory {
             selenoidOptions.put("sessionTimeout", "5m");
             options.setCapability("selenoid:options", selenoidOptions);
 
-            driver = new RemoteWebDriver(buildUrl(SELENOID_URL + "/wd/hub"), options);
+            RemoteWebDriver remoteDriver = new RemoteWebDriver(buildUrl(SELENOID_URL + "/wd/hub"), options);
+            DriverManager.setSessionId(remoteDriver.getSessionId().toString());
+            driver = remoteDriver;
         } else {
             driver = switch (browserName.toLowerCase()) {
                 case "chrome" -> new ChromeDriver((ChromeOptions) options);
                 case "firefox" -> new FirefoxDriver((FirefoxOptions) options);
                 default -> throw new BrowserNotSupportedException(browserName);
             };
+            if (driver instanceof RemoteWebDriver remote) {
+                DriverManager.setSessionId(remote.getSessionId().toString());
+            }
         }
 
         driver.manage().window().setSize(new Dimension(1920, 1080));
