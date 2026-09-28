@@ -5,3 +5,7 @@ out/
 .idea/
 target/
 *.log
+
+### Selenoid ###
+selenoid/video/
+selenoid/logs/
