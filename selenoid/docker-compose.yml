@@ -28,6 +28,8 @@ services:
       - "-capture-driver-logs"
       - "-service-startup-timeout"
       - "5m"
+      - "-video-recorder-image"
+      - "selenwright/selenwright-video-recorder:latest"
 
   selenoid-ui:
     image: aerokube/selenoid-ui:latest-release
