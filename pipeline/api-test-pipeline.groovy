@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    triggers {
+        pollSCM('H/5 * * * *')          // опрос SCM каждые 5 минут
+        cron('H 0 * * *')                // каждый день в полночь
+    }
+
     stages {
         stage('Checkout') {
             steps {
