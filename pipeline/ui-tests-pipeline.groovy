@@ -21,23 +21,11 @@ pipeline {
             }
         }
 
-        stage('Start Selenoid') {
+        stage('Verify Selenoid is available') {
             steps {
-                sh '''
-                    docker compose -f selenoid/docker-compose.yml up -d
-                    echo "Waiting for Selenoid to be ready..."
-                    for i in $(seq 1 30); do
-                        if curl -sf http://host.docker.internal:4444/status > /dev/null 2>&1; then
-                            echo "Selenoid is ready"
-                            curl -s http://host.docker.internal:4444/status
-                            exit 0
-                        fi
-                        echo "Attempt $i: not ready yet"
-                        sleep 2
-                    done
-                    echo "Selenoid did not start in time"
-                    exit 1
-                '''
+                sh """
+                    curl -sf ${params.SELENOID_URL}/status || (echo 'Selenoid недоступен. Запусти его на хосте: cd /opt/selenoid && docker compose up -d' && exit 1)
+                """
             }
         }
 
