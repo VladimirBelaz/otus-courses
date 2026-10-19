@@ -25,7 +25,7 @@ public class CourseAnalyzer {
         List<WebElement> courseCards = catalogPage.getAllCourseCards();
         return courseCards.stream()
                 .map(this::extractCourseInfo)
-                .filter(info -> info != null && info.date != LocalDate.MAX)
+                .filter(info -> info != null && !LocalDate.MAX.equals(info.date()))
                 .toList();
     }
 
@@ -45,7 +45,9 @@ public class CourseAnalyzer {
 
     private String extractDateString(WebElement card) {
         try {
-            return card.findElement(By.cssSelector(".sc-157icee-1")).getText();
+            // Настоящий класс на странице: styles__Text-sc-157icee-1
+            // ищем по подстроке — хеш styled-components меняется при деплоях
+            return card.findElement(By.cssSelector("[class*='157icee-1']")).getText();
         } catch (Exception e) {
             return "Дата не указана";
         }
@@ -53,13 +55,13 @@ public class CourseAnalyzer {
 
     public CourseInfo findEarliestCourse(List<CourseInfo> courses) {
         return courses.stream()
-                .reduce((a, b) -> a.date.isBefore(b.date) ? a : b)
+                .reduce((a, b) -> a.date().isBefore(b.date()) ? a : b)
                 .orElseThrow(() -> new AssertionError("Нет курсов для сравнения"));
     }
 
     public CourseInfo findLatestCourse(List<CourseInfo> courses) {
         return courses.stream()
-                .reduce((a, b) -> a.date.isAfter(b.date) ? a : b)
+                .reduce((a, b) -> a.date().isAfter(b.date()) ? a : b)
                 .orElseThrow(() -> new AssertionError("Нет курсов для сравнения"));
     }
 
